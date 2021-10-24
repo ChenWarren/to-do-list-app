@@ -12,12 +12,6 @@ const Addtask = ({
 }) => {
     return (
         <View style={Styles.addTaskContainer}>
-            {/* <FontAwesome5 
-                name="square" 
-                size={19} 
-                color={Color.disative}
-                style={{paddingLeft: 5}}
-            /> */}
             <TextInput
                 placeholder='Enter text'
                 placeholderTextColor={Color.disative}

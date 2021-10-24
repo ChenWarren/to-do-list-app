@@ -12,33 +12,33 @@ const db = SQLite.openDatabase('db.db')
 
 const App = () => {
     const [ text, setText ] = useState(null)
-    const [ items, setItems ] = useState(null)
-    const [ searchTask, setSearchTask ] = useState(null)
+    const [ items, setItems ] = useState([])
+    const [ searchTask, setSearchTask ] = useState(' ')
     const [ showAddTask, setShowAddTask ] = useState(false)
     const [ showEditBtn, setShowEditBtn ] = useState(false)
 
     useEffect(() => {
-        db.transaction((tx) => {
-            tx.executeSql('create table if not exists items ( id integer primary key autoincrement, done int, value text)')
-        })
+        const loadTasks = async () => {
+            try{
+                db.transaction((tx) => {
+                    tx.executeSql('create table if not exists items ( id integer primary key autoincrement, done int, value text)')
+                })
 
-        db.transaction((tx) => {
-            tx.executeSql('select * from items order by done, id desc',[],
-            (_, {rows}) => {
-                setItems(rows._array)
-            })
-        })
-
+                db.transaction((tx) => {
+                    tx.executeSql('select * from items order by done, id desc',[],
+                    (_, {rows}) => {
+                        setItems(rows._array)
+                    })
+                })
+            } catch (err) {
+                console.log(err.message)
+            }
+        }
+        
+        loadTasks()
+        
     }, [])
-
-    const loadTasks = () => {
-        db.transaction((tx) => {
-            tx.executeSql('select * from items order by done, id decs', [],
-            (_, {rows}) => {
-                setItems(rows._array)
-            })
-        })
-    }
+    
 
     const add = (text) => {
         if( text === null || text === ''){
@@ -131,6 +131,7 @@ const App = () => {
 
             <Tasklist 
                 items={items} 
+                searchTask={searchTask}
                 checkHandler={checkHandler}
                 editHandler={editHandler}
                 showEditBtn={showEditBtn}
