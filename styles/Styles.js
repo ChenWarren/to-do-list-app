@@ -2,6 +2,25 @@ import { StyleSheet, Platform } from "react-native";
 import Color from "../config/Color";
 
 export const Styles = StyleSheet.create({
+    addTaskContainer:{
+      width: '95%',
+      margin: 10,
+      padding: 5,
+      flexDirection: 'row',
+      backgroundColor: Color.pageBG,
+      borderRadius: 10,
+      alignItems: 'center',
+    },
+    addTaskInput: {
+      margin: 5,
+      paddingLeft: 10,
+      color: Color.secondary,
+      fontSize: 20,
+    },
+    btnText: {
+      color: Color.active,
+      fontSize: 18,
+    },
     btnWrapper: {
       height: 40,
       backgroundColor: Color.active,
@@ -21,23 +40,26 @@ export const Styles = StyleSheet.create({
       padding: 5,
       backgroundColor: Color.pageBG,
       borderRadius: 10,
+      alignItems: 'center',
     },
     list: {
       width: '95%',
       margin: 10,
       padding: 10,
-    //   backgroundColor: Color.pageBG,
-    //   borderRadius: 10,
+    },
+    listItem: {
+      marginVertical: 10,
+      paddingLeft: 10,
+      flexDirection: 'row',
+      alignItems: 'center'
     },
     searchInput: {
       margin: 5,
       color: Color.secondary,
-      fontSize: 18,
+      fontSize: 20,
     },
     taskInput: {
-      width: '95%',
-      height: 40,
-      margin: 10,
+      margin: 5,
       color: Color.secondary,
       borderBottomWidth: 1,
       borderColor: Color.disative,
@@ -49,12 +71,16 @@ export const Styles = StyleSheet.create({
       alignItems: 'baseline',
       justifyContent: 'space-between',
       paddingHorizontal: 15,
+      marginTop: 10,
     },
     titleText:{
       fontWeight: 'bold', 
       fontSize: 24, 
-      paddingVertical: 10, 
       color: Color.secondary,
+    },
+    titleTextSmall:{
+      fontSize: 18, 
+      color: Color.disative,
     }
   });
   

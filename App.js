@@ -1,31 +1,143 @@
-import { StatusBar } from 'expo-status-bar';
-import React, { useState } from 'react';
-import { SafeAreaView, Text, View, Button } from 'react-native';
-
+import React, { useEffect, useState } from 'react'
+import { SafeAreaView, Text, View, Button } from 'react-native'
+import * as SQLite from 'expo-sqlite'
 
 import Searchbar from './comps/Searchbar';
+import Tasklist from './comps/Tasklist';
 import Addtask from './comps/Addtask';
 import Color from './config/Color';
 import { Styles } from './styles/Styles';
 
-export default function App() {
-  const [searchTask, setSearchTask] = useState()
-  const [ task, setTask ] = useState('')
+const db = SQLite.openDatabase('db.db')
 
-  return (
-    <SafeAreaView style={Styles.container}>
-      <View style={Styles.title}>
-        <Text style={Styles.titleText}>TASK LIST</Text>
-        <Button color={Color.active} title={'Add'}/>
-      </View>
-      <Searchbar 
-        searchTask={searchTask} 
-        setSearchTask={setSearchTask}
-      />
-      <View style={Styles.list}>
-      </View>  
-      <StatusBar style="auto" />
-    </SafeAreaView>
-  );
+const App = () => {
+    const [ text, setText ] = useState(null)
+    const [ items, setItems ] = useState(null)
+    const [ searchTask, setSearchTask ] = useState(null)
+    const [ showAddTask, setShowAddTask ] = useState(false)
+    const [ showEditBtn, setShowEditBtn ] = useState(false)
+
+    useEffect(() => {
+        db.transaction((tx) => {
+            tx.executeSql('create table if not exists items ( id integer primary key autoincrement, done int, value text)')
+        })
+
+        db.transaction((tx) => {
+            tx.executeSql('select * from items order by done, id desc',[],
+            (_, {rows}) => {
+                setItems(rows._array)
+            })
+        })
+
+    }, [])
+
+    const loadTasks = () => {
+        db.transaction((tx) => {
+            tx.executeSql('select * from items order by done, id decs', [],
+            (_, {rows}) => {
+                setItems(rows._array)
+            })
+        })
+    }
+
+    const add = (text) => {
+        if( text === null || text === ''){
+            return false
+        }
+
+        db.transaction((tx) => {
+            tx.executeSql('insert into items (done, value) values (0, ?)', [text])
+            tx.executeSql( 'select * from items order by done, id desc', [], (_, {rows}) => {
+                setItems(rows._array)
+            })
+        })
+        setShowAddTask(false)
+    }
+
+    const checkHandler = (id) => {
+        db.transaction((tx) => {
+            tx.executeSql('update items set done = 1 where id = ?', [id])
+            tx.executeSql( 'select * from items order by done, id desc', [], (_, {rows}) => {
+                setItems(rows._array)
+            })
+        })
+    }
+
+    const editHandler = (id) => {
+        db.transaction((tx) => {
+            tx.executeSql('delete from items where id = ?', [id])   
+        })
+
+        db.transaction((tx) => {
+            tx.executeSql( 'select * from items order by done, id desc', [],
+            (_, {rows}) => {
+                setItems(rows._array)
+            })
+        })
+    }
+
+    return (
+        <SafeAreaView style={Styles.container}>
+            <View style={Styles.title}>
+                { showAddTask ?
+                <Text 
+                    style={Styles.btnText} 
+                    onPress={()=>setShowAddTask(!showAddTask)}
+                >
+                    Cancel
+                </Text>
+                : 
+                <Text 
+                    style={Styles.titleText}
+                >
+                    TASK LIST
+                </Text> 
+                }
+                
+                { showAddTask ?
+                null
+                :
+                <View style={{flexDirection: 'row'}}>
+                    <Button 
+                        color={Color.active} 
+                        title='Edit' 
+                        onPress={()=>setShowEditBtn(!showEditBtn)}
+                    /> 
+                    <Button 
+                        color={Color.active} 
+                        title='Add' 
+                        onPress={()=> {
+                          setShowAddTask(!showAddTask)
+                          setShowEditBtn(false)
+                        }}
+                    />
+                </View> 
+                }
+            </View>
+
+            {  
+              showAddTask ?
+                <Addtask
+                    text={text}
+                    setText={setText}
+                    add={add}
+                />
+                :
+                <Searchbar 
+                    searchTask={searchTask} 
+                    setSearchTask={setSearchTask}
+                /> 
+            }
+
+            <Tasklist 
+                items={items} 
+                checkHandler={checkHandler}
+                editHandler={editHandler}
+                showEditBtn={showEditBtn}
+            />
+
+        </SafeAreaView>
+    )
 }
 
+export default App

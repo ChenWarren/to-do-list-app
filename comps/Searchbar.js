@@ -12,17 +12,22 @@ const Searchbar = ({
     return (
         <View style={Styles.inputWrapper}>
             <AntDesign 
-            name="search1" 
-            size={20} 
-            color={Color.disative} 
-            style={{paddingTop: 5, paddingLeft: 5}} 
+                name="search1" 
+                size={20} 
+                color={Color.disative} 
+                style={{paddingLeft: 5}} 
             />
             <TextInput
-            placeholder={'Search'}
-            placeholderTextColor={Color.disative}
-            onChange={setSearchTask}
-            value={searchTask}
-            style={Styles.searchInput}
+                placeholder={'Search'}
+                placeholderTextColor={Color.disative}
+                selectionColor={Color.active}
+                onChangeText={(t) => setSearchTask(t)}
+                // onSubmitEditing={() => {
+                //     setSearchTask(null)
+                // }}
+                onFocus={() => setSearchTask(null)}
+                value={searchTask}
+                style={Styles.searchInput}
             />
       </View>
     )
