@@ -61,12 +61,6 @@ const Tasklist = ({
         </View>
     ) 
 
-    // console.log((items).filter( i => (i.value).includes(searchTask)))
-
-    // const itemsResult = (items).filter( i => (i.value).includes(searchTask))
-
-    // console.log(itemsResult);
-
     return (
         <View style={Styles.list}>
             <FlatList

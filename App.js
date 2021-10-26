@@ -13,7 +13,8 @@ const db = SQLite.openDatabase('db.db')
 const App = () => {
     const [ text, setText ] = useState(null)
     const [ items, setItems ] = useState([])
-    const [ searchTask, setSearchTask ] = useState(' ')
+    const [ loadItems, setLoadItems ] = useState([])
+    const [ searchTask, setSearchTask ] = useState('')
     const [ showAddTask, setShowAddTask ] = useState(false)
     const [ showEditBtn, setShowEditBtn ] = useState(false)
 
@@ -28,17 +29,21 @@ const App = () => {
                     tx.executeSql('select * from items order by done, id desc',[],
                     (_, {rows}) => {
                         setItems(rows._array)
+                        setLoadItems(rows._array)
                     })
                 })
+
+
             } catch (err) {
                 console.log(err.message)
             }
         }
-        
         loadTasks()
-        
     }, [])
     
+    useEffect(() => {
+        setLoadItems((items).filter( i => (i.value).toLowerCase().includes(searchTask.toLowerCase())))
+    }, [searchTask])
 
     const add = (text) => {
         if( text === null || text === ''){
@@ -49,6 +54,7 @@ const App = () => {
             tx.executeSql('insert into items (done, value) values (0, ?)', [text])
             tx.executeSql( 'select * from items order by done, id desc', [], (_, {rows}) => {
                 setItems(rows._array)
+                setLoadItems(rows._array)
             })
         })
         setShowAddTask(false)
@@ -59,8 +65,10 @@ const App = () => {
             tx.executeSql('update items set done = 1 where id = ?', [id])
             tx.executeSql( 'select * from items order by done, id desc', [], (_, {rows}) => {
                 setItems(rows._array)
+                setLoadItems(rows._array)
             })
         })
+
     }
 
     const editHandler = (id) => {
@@ -72,6 +80,7 @@ const App = () => {
             tx.executeSql( 'select * from items order by done, id desc', [],
             (_, {rows}) => {
                 setItems(rows._array)
+                setLoadItems(rows._array)
             })
         })
     }
@@ -130,7 +139,7 @@ const App = () => {
             }
 
             <Tasklist 
-                items={items} 
+                items={loadItems} 
                 searchTask={searchTask}
                 checkHandler={checkHandler}
                 editHandler={editHandler}

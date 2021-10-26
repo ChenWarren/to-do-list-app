@@ -54,6 +54,7 @@ export const Styles = StyleSheet.create({
       alignItems: 'center'
     },
     searchInput: {
+      width: '60%',
       margin: 5,
       color: Color.secondary,
       fontSize: 20,

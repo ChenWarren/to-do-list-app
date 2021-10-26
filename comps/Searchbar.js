@@ -1,5 +1,5 @@
-import React from 'react'
-import { View, TextInput } from 'react-native'
+import React, { useState } from 'react'
+import { View, TextInput, Text, Keyboard } from 'react-native'
 import { AntDesign } from '@expo/vector-icons'
 
 import { Styles } from '../styles/Styles'
@@ -9,6 +9,9 @@ const Searchbar = ({
     searchTask,
     setSearchTask
 }) => {
+
+    const [ showingCancel, setShowingCancel ] = useState(false)
+
     return (
         <View style={Styles.inputWrapper}>
             <AntDesign 
@@ -23,12 +26,39 @@ const Searchbar = ({
                 selectionColor={Color.active}
                 onChangeText={(t) => setSearchTask(t)}
                 // onSubmitEditing={() => {
-                //     setSearchTask(null)
+                //     setSearchTask('')
                 // }}
-                onFocus={() => setSearchTask(null)}
+                onFocus={() => {
+                    setSearchTask('')
+                    setShowingCancel(true)
+                }}
                 value={searchTask}
                 style={Styles.searchInput}
             />
+
+            {
+                showingCancel?
+                <View style={{flexDirection: 'row'}}>
+                    <AntDesign 
+                        name="closecircle" 
+                        size={20} 
+                        color={Color.disative} 
+                        style={{paddingRight: 15}}
+                        onPress={() => setSearchTask('')}
+                    />
+                    <Text 
+                        style={Styles.btnText} 
+                        onPress={() => {
+                            setSearchTask('')
+                            setShowingCancel(false)
+                            Keyboard.dismiss()
+                        }}
+                    >
+                        Cancel</Text>
+                </View>
+                :
+                null
+            }
       </View>
     )
 }
