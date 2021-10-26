@@ -28,6 +28,6 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "description": "A simple to-do list that can add, check, and delete tasks on one single page."
+    "description": "A simple to-do list that can add, check, and delete tasks on one single page. \nV1.1"
   }
 }

@@ -10,7 +10,6 @@ import { Styles } from '../styles/Styles'
 const Tasklist = ({
     items,
     showEditBtn,
-    searchTask,
     checkHandler =()=> {},
     editHandler =() => {}
 }) => {

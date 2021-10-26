@@ -1,6 +1,5 @@
 import React from 'react'
 import { TextInput, View } from 'react-native'
-import { FontAwesome5 } from '@expo/vector-icons';
 
 import { Styles } from '../styles/Styles'
 import Color from '../config/Color'
